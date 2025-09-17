@@ -130,8 +130,8 @@ li {
     position: fixed;
     left: 25vw;
     top: 25vh;
-    display: flex;
-    /* display: none; */
+    /* display: flex; */
+    display: none;
      -webkit-box-shadow: 10px 10px 40px -4px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 10px 10px 40px -4px rgba(0, 0, 0, 0.75);
         box-shadow: 10px 10px 40px -4px rgba(0, 0, 0, 0.75);
