@@ -1,4 +1,6 @@
 const addTaskBtn = document.querySelector(".add_btn");
+const removeTaskBtn = document.querySelector(".remove_btn");
+let isDelete = false;
 const modalCont = document.querySelector(".modal_cont");
 const modalTextArea = modalCont.getElementsByClassName("textarea_cont")[0];
 const modalPriorityColorCont = modalCont.getElementsByClassName(
@@ -6,9 +8,50 @@ const modalPriorityColorCont = modalCont.getElementsByClassName(
 )[0];
 const mainCont = document.querySelector(".main_cont");
 const priorityColors = ["pink", "blue", "purple", "green"];
+const toolBoxPriorityColorCont = document.querySelector(
+  ".toolbox_priority_cont"
+);
+let allTickets = JSON.parse(localStorage.getItem("allTickets")) || [];
+let isFromLS = false;
+
+isFromLS = true;
+allTickets.forEach((ticket) => {
+  const { content, priorityColor, uid } = ticket;
+  createTicket(priorityColor, uid, content);
+});
+isFromLS = false;
+
+toolBoxPriorityColorCont.addEventListener("click", function (e) {
+  if (e.target == e.currentTarget) return;
+  const priorityColorTicketsWanted = e.target.classList[1];
+  const allTickets = Array.from(mainCont.children);
+  console.log(allTickets);
+  allTickets.forEach((ticketEle) => {
+    if (ticketEle.children[0].classList[1] == priorityColorTicketsWanted) {
+      ticketEle.style.display = "block";
+    } else ticketEle.style.display = "none";
+  });
+});
+
+toolBoxPriorityColorCont.addEventListener("dblclick", function (e) {
+  if (e.target == e.currentTarget) return;
+  const allTickets = Array.from(mainCont.children);
+  allTickets.forEach((ticketEle) => {
+    ticketEle.style.display = "block";
+  });
+});
 
 addTaskBtn.addEventListener("click", () => {
   modalCont.style.display = "flex";
+});
+
+removeTaskBtn.addEventListener("click", () => {
+  if (isDelete) {
+    removeTaskBtn.style.color = "black";
+  } else {
+    removeTaskBtn.style.color = "red";
+  }
+  isDelete = !isDelete;
 });
 
 modalPriorityColorCont.addEventListener("click", (e) => {
@@ -39,7 +82,7 @@ modalCont.addEventListener("keypress", (e) => {
   modalTextArea.value = "";
   priorityColorEle.classList.remove("active");
   modalPriorityColorCont
-    .getElementsByClassName("blue")[0]
+    .getElementsByClassName("purple")[0]
     .classList.add("active");
 });
 
@@ -55,14 +98,22 @@ function createTicket(priorityColor, uid, content) {
   const priorityColorEle = ticketContainer.querySelector(".ticket_color");
   const lockUnlockBtn = ticketContainer.querySelector(".lock_unlock");
   const ticketArea = ticketContainer.querySelector(".ticket_area");
-  addPriorityChangeListeners(priorityColorEle);
-  addLockUnlockListeners(lockUnlockBtn, ticketArea);
-  deleteListeners();
-
+  addPriorityChangeListeners(priorityColorEle, uid);
+  addLockUnlockListeners(lockUnlockBtn, ticketArea, uid);
+  deleteListeners(ticketContainer, uid);
+  if (!isFromLS) {
+    const ticketObj = {
+      priorityColor,
+      uid,
+      content,
+    };
+    allTickets.push(ticketObj);
+    localStorage.setItem("allTickets", JSON.stringify(allTickets));
+  }
   mainCont.appendChild(ticketContainer);
 }
 
-function addPriorityChangeListeners(priorityColorEle) {
+function addPriorityChangeListeners(priorityColorEle, uid) {
   console.log(priorityColorEle);
 
   priorityColorEle.addEventListener("click", function () {
@@ -71,10 +122,14 @@ function addPriorityChangeListeners(priorityColorEle) {
     let nextColor = priorityColors[(currColorIdx + 1) % priorityColors.length];
     priorityColorEle.classList.remove(currColor);
     priorityColorEle.classList.add(nextColor);
+    let ticketObj = allTickets.find(ticket => ticket.uid == uid);
+    ticketObj.priorityColor = nextColor;
+    updateLocalStorage();
   });
+
 }
 
-function addLockUnlockListeners(lockUnlockBtn, ticketArea) {
+function addLockUnlockListeners(lockUnlockBtn, ticketArea, uid) {
   lockUnlockBtn.addEventListener("click", () => {
     const button = lockUnlockBtn.children[0]?.classList[1];
     //lock button -> unlock it and make ticketArea editable
@@ -88,7 +143,25 @@ function addLockUnlockListeners(lockUnlockBtn, ticketArea) {
       lockUnlockBtn.children[0].classList.add("fa-lock");
       ticketArea.setAttribute("contenteditable", false);
     }
+    let ticketObj = allTickets.find(ticket => ticket.uid == uid);
+    ticketObj.content = ticketArea.textContent;
+    updateLocalStorage();
   });
 }
 
-function deleteListeners() {}
+function deleteListeners(ticketContainer, uid) {
+  ticketContainer.addEventListener("click", function () {
+    if (isDelete) {
+      ticketContainer.remove();
+    let restOfTickets = allTickets.filter(ticket => ticket.uid !== uid);
+    console.log(restOfTickets);
+    
+    allTickets = restOfTickets;
+    updateLocalStorage();
+    }
+  });
+}
+
+function updateLocalStorage(){
+    localStorage.setItem("allTickets", JSON.stringify(allTickets));
+}
