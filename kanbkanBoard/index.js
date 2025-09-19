@@ -3,7 +3,7 @@ const modalCont = document.querySelector(".modal_cont");
 const modalTextArea = modalCont.getElementsByClassName("textarea_cont")[0];
 const modalPriorityColorCont = modalCont.getElementsByClassName("priority_color_cont")[0];
 const mainCont =  document.querySelector(".main_cont");
-
+const priorityColors = ["pink", "blue", "purple", "green"];
 
 addTaskBtn.addEventListener("click", () => {
     modalCont.style.display = "flex";
@@ -48,5 +48,41 @@ function createTicket(priorityColor, uid, content){
             <div class="lock_unlock">
                 <i class="fa-solid fa-lock"></i>
             </div>`;
-    mainCont.appendChild(ticketContainer)
+    const priorityColorEle = ticketContainer.querySelector(".ticket_color");
+    const lockUnlockBtn = ticketContainer.querySelector(".lock_unlock");
+    const ticketArea = ticketContainer.querySelector(".ticket_area");
+    addPriorityChangeListeners(priorityColorEle);
+    addLockUnlockListeners(lockUnlockBtn, ticketArea);
+    mainCont.appendChild(ticketContainer);
+}
+
+function addPriorityChangeListeners(priorityColorEle){
+    console.log(priorityColorEle);
+    
+    priorityColorEle.addEventListener("click", function(){
+        let currColor = priorityColorEle.classList[1];
+        let currColorIdx = priorityColors.indexOf(currColor);
+        let nextColor = priorityColors[(currColorIdx+1)%priorityColors.length];
+        priorityColorEle.classList.remove(currColor);
+        priorityColorEle.classList.add(nextColor);
+
+    });
+
+}
+
+function addLockUnlockListeners(lockUnlockBtn, ticketArea){
+    lockUnlockBtn.addEventListener("click", ()=>{
+        const button = lockUnlockBtn.children[0]?.classList[1];
+        //lock button -> unlock it and make ticketArea editable
+        if(button == "fa-lock"){
+            lockUnlockBtn.children[0].classList.remove("fa-lock");
+            lockUnlockBtn.children[0].classList.add("fa-unlock");
+            ticketArea.setAttribute("contenteditable", true);
+        }else{ //unlock button -> lock it and make ticketArea non-editable
+            lockUnlockBtn.children[0].classList.remove("fa-unlock");
+            lockUnlockBtn.children[0].classList.add("fa-lock");
+            ticketArea.setAttribute("contenteditable", false);
+        }
+    })
+
 }
