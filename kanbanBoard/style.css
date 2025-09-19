@@ -1,0 +1,83 @@
+:root{
+    --pink: lightpink;
+    --blue: lightblue;
+    --purple: #8e44ad;
+    --green: lightgreen;
+    --red: rgb(245, 9, 9);
+    --light: white;
+}
+
+html{
+    box-sizing: border-box;
+}
+
+*, *::before,*::after{
+    box-sizing: inherit;
+} 
+
+html,body{
+    margin:0
+}
+
+a{
+    text-decoration: none;
+}
+
+li{
+    list-style: none;
+}
+
+.pink{
+    background-color: var(--pink);
+}
+
+.blue{
+    background-color: var(--blue);
+}
+
+.green{
+    background-color: var(--green);
+}
+
+.purple{
+    background-color: var(--purple);
+}
+
+.red{
+    color: var(--red);
+}
+
+.toolbox_cont{
+    background-color: black;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    gap:2rem;
+}
+
+.toolbox_priority_cont, .action_btn_cont{
+    height: 60%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.toolbox_priority_cont{
+    margin-left: 3rem;
+    background-color: gray;
+    width: 18rem;
+}
+
+.color{
+    height: 50%;
+    width: 3.5rem
+}
+
+.action_btn_cont{
+    width: 9rem;
+    background-color: var(--light);
+}
+
+.action_btn_cont>*{
+    font-size: 1.75rem;
+}
