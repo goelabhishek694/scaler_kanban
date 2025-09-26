@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Counter Component snapshot for counter 1`] = `
+<DocumentFragment>
+  <div>
+    <h1>
+      Counter
+    </h1>
+    <button>
+      +
+    </button>
+    <p>
+      Count is 0
+    </p>
+    <button>
+      -
+    </button>
+  </div>
+</DocumentFragment>
+`;

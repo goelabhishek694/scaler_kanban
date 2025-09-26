@@ -45,4 +45,9 @@ describe("Counter Component", () => {
 
   })
 
+  test("snapshot for counter", () => {
+    const {asFragment} = render(<Counter />);
+    expect(asFragment()).toMatchSnapshot();
+  });
+
 });
